@@ -2,21 +2,12 @@ const std = @import("std");
 const httpz = @import("httpz");
 
 pub fn main() !void {
-    std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
-    const stdout_file = std.io.getStdOut().writer();
-    var bw = std.io.bufferedWriter(stdout_file);
-    const stdout = bw.writer();
-
-    try stdout.print("Run `zig build test` to run the tests.\n", .{});
-
-    try bw.flush();
-
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
     var tsa = std.heap.ThreadSafeAllocator{ .child_allocator = gpa.allocator() };
     const allocator = tsa.allocator();
-    var server = try MyHandlerServer.init(allocator);
-    defer server.deinit(allocator);
+    var server = try MyRouterServer.init(allocator);
+    defer server.deinit();
     std.debug.print("Server is listening on port 4042\n", .{});
 
     while (true) {
