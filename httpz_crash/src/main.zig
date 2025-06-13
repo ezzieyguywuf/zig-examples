@@ -10,6 +10,19 @@ pub fn main() !void {
     try stdout.print("Run `zig build test` to run the tests.\n", .{});
 
     try bw.flush();
+
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
+    var tsa = std.heap.ThreadSafeAllocator{ .child_allocator = gpa.allocator() };
+    const allocator = tsa.allocator();
+    var server = try MyServer.init(allocator);
+    defer server.deinit();
+    std.debug.print("Server is listening on port 4042\n", .{});
+
+    while (true) {
+        std.debug.print("Main thread sleeping for 10s\n", .{});
+        std.time.sleep(10 * std.time.ns_per_s);
+    }
 }
 
 const MyServer = struct {
