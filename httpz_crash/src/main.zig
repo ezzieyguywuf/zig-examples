@@ -53,6 +53,8 @@ test "why does this crash" {
     defer client.deinit();
 
     // this lets us try the server with curl
+    // when you see " main.test.why does this crash" in the `zig build test`
+    // output you can use curl
     // curl -X POST http://127.0.0.1:4042/foo
     std.debug.print("server is listening on 4042, sleeping for 10s\n", .{});
     std.time.sleep(10 * std.time.ns_per_s);
